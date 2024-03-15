@@ -1,7 +1,7 @@
 from typing import Union
 from pydantic import BaseModel
 
-from hash import hash
+from resources.models.helpers.hash import hash
 
 class SchemaModel(BaseModel):
     _schema_name: str

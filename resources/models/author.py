@@ -1,3 +1,4 @@
+from cloudevents.http import CloudEvent
 from pydantic import BaseModel
 
 
@@ -49,13 +50,29 @@ class AuthorModel(BaseModel):
         Warning("Deleting the author token is not allowed")
 
     def marshal(self):
+        # marshal the AuthorModel instance and return a dictionary containing
+        # the AuthorModel instance's attributes
+        # This is useful for creating a CloudEvent instance (see resources/event.py)
+        #
+        # Example: event = CloudEvent(**author.marshal())
+
         return {
             "author_name": self._author_name,
             "author_id": self._author_id,
             "author_token": self._author_token
         }
 
-    def unmarshal(self, data: dict):
-        self._author_name = data['author_name']
-        self._author_id = data['author_id']
-        self._author_token = data['author_token']
+    @classmethod
+    def unmarshal(cls, event: CloudEvent):
+        # unmarsal the event and return an AuthorModel instance from the event's attributes
+        # This is useful for deserializing a CloudEvent instance (see resources/event.py)
+        #
+        # Example:  event = CloudEvent(**author.marshal())
+        #           author = AuthorModel.unmarshal(event)
+
+        attributes = event.get_attributes()
+        cls.authorid = attributes['authorid']
+        cls.authorname = attributes['authorname']
+        cls.authortoken = attributes['authortoken']
+
+        return cls
