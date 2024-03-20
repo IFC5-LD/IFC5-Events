@@ -22,12 +22,12 @@ class IFCEvent(CloudEvent):
             **self._project.marshal()
         }
 
-        data = self._data.data
+
 
         return CloudEvent(
-            source="https://example.com",
-            type="com.example.test",
-            data=data,
+            source=self.source,
+            type=self.type,
+            data=self._data.data,
             datacontenttype="application/cloudevents+json",
             time=str(datetime.datetime.utcnow()),
             **attributes
