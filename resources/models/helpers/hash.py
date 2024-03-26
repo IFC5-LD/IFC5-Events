@@ -1,4 +1,5 @@
 from hashlib import sha256
+from typing import Union
 
 
 def _hash_string(string: str, encoding: str = "utf-8") -> str:

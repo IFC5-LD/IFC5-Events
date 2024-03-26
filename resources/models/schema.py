@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 from resources.models.helpers.hash import hash
 
+
 class SchemaModel(BaseModel):
     _schema_name: str
     _schema_uri: str
@@ -56,7 +57,7 @@ class SchemaModel(BaseModel):
         return self._schema_hash
 
     @schemahash.setter
-    def schemahash(self, value: str, schema: Union[str, dict]=None) -> None:
+    def schemahash(self, value: str, schema: Union[str, dict] = None) -> None:
         if schema:
             self._schema_hash = hash(schema)
         else:

@@ -1,14 +1,19 @@
-from models.schema import SchemaModel
+import json
+import os
+
+from resources.models.schema import SchemaModel
 from jsonschema import validate
 from jsonschema.validators import Draft202012Validator
 import aiohttp
+import aiofiles
 import asyncio
+
 
 class Schema:
     _schema: dict
     _model: SchemaModel
-    def __init__(self, schema_name: str, schema_uri: str):
 
+    def __init__(self, schema_name: str, schema_uri: str):
         self._model.schemaname = schema_name
         self._model.schemauri = schema_uri
 
@@ -27,9 +32,13 @@ class Schema:
         if uri:
             self._model.schemauri = uri
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(self._model.schemauri) as response:
-                self._schema = await response.json()
+        if os.getenv("IFC_ENV", "dev") == "dev":
+            async with aiofiles.open(self._model.schemauri, mode='r') as file:
+                self._schema = json.loads(await file.read())
+        else:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(self._model.schemauri) as response:
+                    self._schema = await response.json()
 
     def json_schema(self) -> dict:
         return self._schema

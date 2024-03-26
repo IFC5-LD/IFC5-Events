@@ -1,28 +1,25 @@
 import datetime
 import uuid
+from typing import Union, Optional
 
 from cloudevents.pydantic import CloudEvent
-from typing import Union
 
-from resources.models import EventModel
+from resources.models import EventModel, SchemaModel, AuthorModel, DataModel, ProjectModel
 
-# Dummy change
+
 class IFCEvent(CloudEvent):
     source: str
     entityid: Union[str, int, uuid.UUID]
     componentid: Union[str, int, uuid.UUID]
-    _ifc_event_model: EventModel
+    model: Optional[EventModel] = EventModel()
 
     def marshal(self) -> CloudEvent:
-
         attributes = {
-            **self._schema.marshal(),
-            **self._author.marshal(),
-            **self._data.marshal(),
-            **self._project.marshal()
+            **self.model.schema.marshal(),
+            **self.model.author.marshal(),
+            **self.model.data.marshal(),
+            **self.model.project.marshal()
         }
-
-
 
         return CloudEvent(
             source=self.source,
@@ -37,7 +34,7 @@ class IFCEvent(CloudEvent):
         # We likely need some better logic here
         self.entityid = data['entityid']
         self.componentid = data['componentid']
-        self._schema = SchemaModel(**data['_schema'])
-        self._author = AuthorModel(**data['_author'])
-        self._data = DataModel(**data['_data'])
-        self._project = ProjectModel(**data['_project'])
+        self.model.schema = SchemaModel(**data['_schema'])
+        self.model.author = AuthorModel(**data['_author'])
+        self.model.data = DataModel(**data['_data'])
+        self.model.project = ProjectModel(**data['_project'])

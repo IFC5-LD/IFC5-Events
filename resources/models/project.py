@@ -1,9 +1,11 @@
+from typing import Optional
+
 from cloudevents.http import CloudEvent
 from pydantic import BaseModel
 
 
 class ProjectModel(BaseModel):
-    _project_name: str
+    _project_name: Optional[str] = None
 
     @property
     def projectname(self):
@@ -22,7 +24,7 @@ class ProjectModel(BaseModel):
 
     def marshal(self) -> dict:
         return {
-            "project_name": self._project_name
+            "project_name": self.projectname
         }
 
     def unmarshal(self, event: CloudEvent) -> None:
