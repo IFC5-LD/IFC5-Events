@@ -86,7 +86,7 @@ class DataModel(BaseModel):
     def datahash(self) -> str:
         Warning("Deleting the event hash is not allowed")
 
-    def marshal(self) -> dict:
+    def marshal(self, format: str = "json") -> dict:
         """
         Marshal the DataModel instance into an agnostic format
         by returning a dictionary containing the DataModel instance's
@@ -95,11 +95,27 @@ class DataModel(BaseModel):
         :return: dict
         """
 
-        return {
-            "dataencoding": self.dataencoding,
-            "dataencryption": self.dataencryption,
-            "datahash": self.datahash
+        ret = {
+            "data_encoding": self.dataencoding,
+            "data_encryption": self.dataencryption,
+            "data_hash": self.datahash
         }
+
+        if format == "cloudevent":
+            return {k.replace("_", ""): v for k, v in ret.items()}
+        else:
+            return ret
+
+    def marshal_event(self) -> dict:
+        """
+        Marshal the DataModel instance into a CloudEvent format
+        by returning a dictionary containing the DataModel instance's
+        attributes
+
+        :return: dict
+        """
+
+        return {k.replace("_", ""): v for k, v in self.marshal().items()}
 
     @classmethod
     def unmarshal(cls, data: dict) :
@@ -108,12 +124,12 @@ class DataModel(BaseModel):
         :param event:
         :return:
         """
-        print(data)
+        print(hash(data.get("data")))
 
         return DataModel(
-            data_encoding=data.get("dataencoding", "utf-8"),
-            data_encryption=data.get("dataencryption", ""),
-            data_hash=data.get("datahash", hash(data.get("data"))),
+            data_encoding=data.get("data_encoding", "utf-8"),
+            data_encryption=data.get("data_encryption", ""),
+            data_hash=data.get("data_hash", hash(data.get("data"))),
             data=data["data"]
         )
 

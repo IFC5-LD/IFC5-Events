@@ -9,19 +9,19 @@ from resources.models import EventModel, SchemaModel, AuthorModel, DataModel, Pr
 
 class IFCEvent(CloudEvent):
     source: str
-    entityid: Union[str, int, uuid.UUID]
-    componentid: Union[str, int, uuid.UUID]
-    model: Optional[EventModel] = EventModel()
+    entity_id: Union[str, int, uuid.UUID]
+    component_id: Union[str, int, uuid.UUID]
+    model: EventModel = EventModel()
 
     def marshal(self) -> CloudEvent:
+        format = "cloudevent"
         attributes = {
-            **self.model.schema.marshal(),
-            **self.model.author.marshal(),
-            **self.model.data.marshal(),
-            **self.model.project.marshal()
+            **self.model.schema.marshal(format),
+            **self.model.author.marshal(format),
+            **self.model.data.marshal(format),
+            **self.model.project.marshal(format)
         }
 
-        attributes = {}
         payload = self.model.data.marshal()
 
         return CloudEvent(
@@ -41,8 +41,8 @@ class IFCEvent(CloudEvent):
         self.source = attributes['source']
 
 
-        self.entityid = data['entityid']
-        self.componentid = data['componentid']
+        self.entityid = data['entity_id']
+        self.componentid = data['component_id']
         self.model.schema = SchemaModel(**data['_schema'])
         self.model.author = AuthorModel(**data['_author'])
         self.model.data = DataModel(**data['_data'])

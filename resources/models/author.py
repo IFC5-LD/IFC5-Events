@@ -49,18 +49,23 @@ class AuthorModel(BaseModel):
     def authortoken(self):
         Warning("Deleting the author token is not allowed")
 
-    def marshal(self):
+    def marshal(self, format: str = "json") -> dict:
         # marshal the AuthorModel instance and return a dictionary containing
         # the AuthorModel instance's attributes
         # This is useful for creating a CloudEvent instance (see resources/event.py)
         #
         # Example: event = CloudEvent(**author.marshal())
 
-        return {
-            "authorname": self.authorname,
-            "authorid": self.authorid,
-            "authortoken": self.authortoken
+        ret = {
+            "author_name": self.authorname,
+            "author_id": self.authorid,
+            "author_token": self.authortoken
         }
+
+        if format.lower() == "cloudevent":
+            return {k.replace("_", ""): v for k, v in ret.items()}
+        else:
+            return ret
 
     @classmethod
     def unmarshal(cls, data: dict):
@@ -71,7 +76,7 @@ class AuthorModel(BaseModel):
         #           author = AuthorModel.unmarshal(event)
 
         return AuthorModel(
-            author_name=data['authorname'],
-            author_id=data['authorid'],
-            author_token=data['authortoken']
+            author_name=data.get("author_name", "authorname"),
+            author_id=data.get("author_id", "authorid"),
+            author_token=data.get("author_token", "authortoken")
         )

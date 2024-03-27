@@ -22,15 +22,27 @@ class ProjectModel(BaseModel):
 
         return tmp
 
-    def marshal(self) -> dict:
-        return {
+    def marshal(self, format: str = "json") -> dict:
+        """
+        marshal the ProjectModel instance and return a dictionary containing
+        the ProjectModel instance's attributes
+
+        :return:
+        """
+        ret = {
             "project_name": self.projectname
         }
+
+        if format == "cloudevent":
+            return {k.replace("_", ""): v for k, v in ret.items()}
+        else:
+            return ret
 
     @classmethod
     def unmarshal(cls, data: dict):
         """
-        unmarshal a dictionary containing the ProjectModel instance's attributes
+        Unmarshal the ProjectModel instance and return a new instance of ProjectModel
+        from a dictionary containing a ProjectModel instance's attributes
 
         :param data:
         """

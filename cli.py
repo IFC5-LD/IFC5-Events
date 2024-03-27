@@ -12,16 +12,16 @@ from resources.models import DataModel, AuthorModel, SchemaModel, ProjectModel
 @click.command("create-event")
 @click.option("--source", "-s", help="The source of the event", required=False, default="https://example.com")
 @click.option("--type", "-t", help="The type of the event", required=False, default="com.example.event")
-@click.option("--entityid", "-e", help="The entity ID of the event", required=False, default=str(uuid.uuid4()))
-@click.option("--componentid", "-c", help="The component ID of the event", required=False, default=str(uuid.uuid4()))
+@click.option("--entity-id", "-e", "entity_id", help="The entity ID of the event", required=False, default=str(uuid.uuid4()))
+@click.option("--component-id", "-c", "component_id", help="The component ID of the event", required=False, default=str(uuid.uuid4()))
 @click.option("--instance", "-i", help="The instance of the event", required=False, default={})
 @click.option("--schema", "-sc", help="The schema of the event", required=False, default={})
 @click.option("--test", is_flag=True, help="Run the test suite", default=False)
 def create_event(
         source: str,
         type: str,
-        entityid: str,
-        componentid: str,
+        entity_id: str,
+        component_id: str,
         instance: dict,
         schema: dict,
         test: bool
@@ -29,29 +29,29 @@ def create_event(
     event = IFCEvent(
         source="https://example.com",
         type="com.example.event",
-        entityid="123e4567-e89b-12d3-a456-426614174000",
-        componentid="123e4567-e89b-12d3-a456-426614174000",
+        entity_id="123e4567-e89b-12d3-a456-426614174000",
+        component_id="123e4567-e89b-12d3-a456-426614174000",
     )
 
     if test:
 
-        event.model.author.unmarshal(
+        event.model.author = AuthorModel.unmarshal(
             data={
-                "authorname": "John Doe",
-                "authorid": "123e4567-e89b-12d3-a456-426614174000",
-                "authortoken": "123e4567-e89b-12d3-a456-426614174000"
+                "author_name": "John Doe",
+                "author_id": "123e4567-e89b-12d3-a456-426614174000",
+                "author_token": "123e4567-e89b-12d3-a456-426614174000"
             }
         )
-        event.model.schema.unmarshal(
+        event.model.schema = SchemaModel.unmarshal(
             data={
-                "_schema_name": "example",
-                "_schema_uri": "data/schema/event.schema.json",
-                "_schema_version": "1.0.0",
-                "_schema_hash": "123e4567-e89b-12d3-a456-426614174000"
+                "schema_name": "example",
+                "schema_uri": "data/schema/event.schema.json",
+                "schema_version": "1.0.0",
+                "schema_hash": "123e4567-e89b-12d3-a456-426614174000"
             }
         )
 
-        event.model.project.unmarshal(
+        event.model.project = ProjectModel.unmarshal(
             data={
                 "project_name": "example",
                 "project_id": "123e4567-e89b-12d3-a456-426614174000"
@@ -59,8 +59,10 @@ def create_event(
         )
         data = json.load(open("data/instances/example.json"))
 
-        event.model.data.unmarshal(
+        event.model.data = DataModel.unmarshal(
             data={
+                "data_encoding": "utf-8",
+                "data_encryption": "test",
                 "data": {"key": "value"}
             }
         )
@@ -75,8 +77,8 @@ def create_event(
         event.model.project = ProjectModel(data={"name": "example"})
         event.model.data = DataModel(data={"key": "value"})
     click.echo('Creating a new event...')
-    click.echo(f'Event ID: {event.entityid}')
-    click.echo(f"Payload: {event.marshal()}")
+    click.echo(f'Event ID: {event.entity_id}')
+    click.echo(f"Payload: {event.marshal().json()}")
 
 
 @click.command("get-schema")

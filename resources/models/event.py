@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 from resources.models.author import AuthorModel
@@ -5,29 +7,14 @@ from resources.models.data import DataModel
 from resources.models.project import ProjectModel
 from resources.models.schema import SchemaModel
 
+
 class EventModel(BaseModel):
-    _entityid: str = None
-    _componentid: str = None
-    _schema: SchemaModel = SchemaModel()
-    _author: AuthorModel = AuthorModel()
-    _data: DataModel = DataModel()
-    _project: ProjectModel = ProjectModel()
-
-    @property
-    def entityid(self):
-        return self._entityid
-
-    @entityid.setter
-    def entityid(self, value: str) -> None:
-        self._entityid = value
-
-    @property
-    def componentid(self):
-        return self._componentid
-
-    @componentid.setter
-    def componentid(self, value: str) -> None:
-        self._componentid = value
+    entity_id: str = None
+    component_id: str = None
+    _schema: Optional[SchemaModel] = None
+    _project: Optional[ProjectModel] = None
+    _author: Optional[AuthorModel] = None
+    _data: Optional[DataModel] = None
 
     @property
     def schema(self):
@@ -36,6 +23,14 @@ class EventModel(BaseModel):
     @schema.setter
     def schema(self, value: SchemaModel) -> None:
         self._schema = value
+
+    @property
+    def project(self):
+        return self._project
+
+    @project.setter
+    def project(self, value: ProjectModel) -> None:
+        self._project = value
 
     @property
     def author(self):
@@ -53,10 +48,3 @@ class EventModel(BaseModel):
     def data(self, value: DataModel) -> None:
         self._data = value
 
-    @property
-    def project(self):
-        return self._project
-
-    @project.setter
-    def project(self, value: ProjectModel) -> None:
-        self._project = value
