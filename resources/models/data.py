@@ -106,17 +106,6 @@ class DataModel(BaseModel):
         else:
             return ret
 
-    def marshal_event(self) -> dict:
-        """
-        Marshal the DataModel instance into a CloudEvent format
-        by returning a dictionary containing the DataModel instance's
-        attributes
-
-        :return: dict
-        """
-
-        return {k.replace("_", ""): v for k, v in self.marshal().items()}
-
     @classmethod
     def unmarshal(cls, data: dict) :
         """
@@ -130,6 +119,6 @@ class DataModel(BaseModel):
             data_encoding=data.get("data_encoding", "utf-8"),
             data_encryption=data.get("data_encryption", ""),
             data_hash=data.get("data_hash", hash(data.get("data"))),
-            data=data["data"]
+            data=data.get("data")
         )
 

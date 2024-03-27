@@ -36,36 +36,23 @@ def create_event(
     if test:
 
         event.model.author = AuthorModel.unmarshal(
-            data={
-                "author_name": "John Doe",
-                "author_id": "123e4567-e89b-12d3-a456-426614174000",
-                "author_token": "123e4567-e89b-12d3-a456-426614174000"
-            }
+            data=json.load(open("data/instances/tests/author.json"))
         )
         event.model.schema = SchemaModel.unmarshal(
-            data={
-                "schema_name": "example",
-                "schema_uri": "data/schema/event.schema.json",
-                "schema_version": "1.0.0",
-                "schema_hash": "123e4567-e89b-12d3-a456-426614174000"
-            }
+            data=json.load(open("data/instances/tests/schema.json"))
         )
 
         event.model.project = ProjectModel.unmarshal(
-            data={
-                "project_name": "example",
-                "project_id": "123e4567-e89b-12d3-a456-426614174000"
-            }
+            data=json.load(open("data/instances/tests/project.json"))
         )
-        data = json.load(open("data/instances/example.json"))
 
+        data = json.load(open("data/instances/tests/data.json"))
         event.model.data = DataModel.unmarshal(
-            data={
-                "data_encoding": "utf-8",
-                "data_encryption": "test",
-                "data": {"key": "value"}
-            }
+            data=data
         )
+
+        event.data = data.get("data")
+
     else:
         event.model.author = AuthorModel(data={"name": "John Doe", "email": "test@example.com"})
         event.model.schema = SchemaModel(data={

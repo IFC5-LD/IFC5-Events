@@ -22,7 +22,7 @@ class IFCEvent(CloudEvent):
             **self.model.project.marshal(format)
         }
 
-        payload = self.model.data.marshal()
+        payload = self.model.data.data
 
         return CloudEvent(
             source=self.source,
@@ -40,9 +40,8 @@ class IFCEvent(CloudEvent):
 
         self.source = attributes['source']
 
-
-        self.entityid = data['entity_id']
-        self.componentid = data['component_id']
+        self.entity_id = data['entity_id']
+        self.component_id = data['component_id']
         self.model.schema = SchemaModel(**data['_schema'])
         self.model.author = AuthorModel(**data['_author'])
         self.model.data = DataModel(**data['_data'])
