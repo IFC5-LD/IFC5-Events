@@ -22,29 +22,21 @@ class DataModel(BaseModel):
         The datahash property is a string that represents the hash of the data property.
 
     """
-    _data_encoding: str = "utf-8"
-    _data_encryption: str = None
-    _data_hash: str
-    _data: Union[dict, BinaryIO]
-
-    @property
-    def data(self):
-        return self._data
-
-    @data.setter
-    def data(self, value: Union[dict, BinaryIO]) -> None:
-        self._data = value
+    data_encoding: str = "utf-8"
+    data_encryption: str = None
+    data_hash: str = None
+    data: Union[dict] = None
 
     @property
     def dataencoding(self):
-        return self._data_encoding
+        return self.data_encoding
 
     @dataencoding.setter
     def dataencoding(self, value: str=None) -> None:
         if value:
-            self._data_encoding = value
+            self.data_encoding = value
         else:
-            self._data_encoding = "utf-8"
+            self.data_encoding = "utf-8"
 
     @dataencoding.deleter
     def dataencoding(self) -> str:
@@ -53,18 +45,18 @@ class DataModel(BaseModel):
 
         :return: str
         """
-        tmp = self._data_encoding
-        self._data_encoding = None
+        tmp = self.data_encoding
+        self.data_encoding = None
 
         return tmp
 
     @property
     def dataencryption(self):
-        return self._data_encryption
+        return self.data_encryption
 
     @dataencryption.setter
     def dataencryption(self, value: str) -> None:
-        self._data_encryption = value
+        self.data_encryption = value
 
     @dataencryption.deleter
     def dataencryption(self) -> str:
@@ -72,7 +64,7 @@ class DataModel(BaseModel):
 
     @property
     def datahash(self):
-        return self._data_hash
+        return self.data_hash
 
     @datahash.setter
     def datahash(self, value: str, data: Union[str, dict]=None) -> None:
@@ -86,9 +78,9 @@ class DataModel(BaseModel):
         """
 
         if data:
-            self._data_hash = hash(data, self._data_encoding)
+            self.data_hash = hash(data, self.data_encoding)
         else:
-            self._data_hash = value
+            self.data_hash = value
 
     @datahash.deleter
     def datahash(self) -> str:
@@ -110,16 +102,17 @@ class DataModel(BaseModel):
         }
 
     @classmethod
-    def unmarshal(cls, event: CloudEvent):
+    def unmarshal(cls, data: dict) :
         """
         Unmarshal the DataModel instance and return a dictionary containing
         :param event:
         :return:
         """
 
-        attributes = event.get_attributes()
-        cls.dataencoding = attributes['dataencoding']
-        cls.dataencryption = attributes['dataencryption']
-        cls.datahash = hash(str(attributes['data']))
-        cls.data = event.get_data()
+        return DataModel(
+            data_encoding=data.get("dataencoding", "utf-8"),
+            data_encryption=data.get("dataencryption", ""),
+            data_hash=data.get("datahash", hash(data.get("data"))),
+            data=data.get("data", {})
+        )
 

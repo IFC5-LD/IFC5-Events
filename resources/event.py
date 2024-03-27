@@ -30,8 +30,14 @@ class IFCEvent(CloudEvent):
             **attributes
         )
 
-    def unmarshal(self, data: dict) -> None:
+    def unmarshal(self, event: CloudEvent) -> None:
         # We likely need some better logic here
+        attributes = event.attributes()
+        data = event.data
+
+        self.source = attributes['source']
+
+
         self.entityid = data['entityid']
         self.componentid = data['componentid']
         self.model.schema = SchemaModel(**data['_schema'])

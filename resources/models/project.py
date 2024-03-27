@@ -5,20 +5,20 @@ from pydantic import BaseModel
 
 
 class ProjectModel(BaseModel):
-    _project_name: Optional[str] = None
+    project_name: Optional[str] = None
 
     @property
     def projectname(self):
-        return self._project_name
+        return self.project_name
 
     @projectname.setter
     def projectname(self, value: str) -> None:
-        self._project_name = value
+        self.project_name = value
 
     @projectname.deleter
     def projectname(self) -> str:
-        tmp = self._project_name
-        self._project_name = None
+        tmp = self.project_name
+        self.project_name = None
 
         return tmp
 
@@ -27,6 +27,14 @@ class ProjectModel(BaseModel):
             "project_name": self.projectname
         }
 
-    def unmarshal(self, event: CloudEvent) -> None:
-        attributes = event.attributes()
-        self._project_name = attributes['project_name']
+    @classmethod
+    def unmarshal(cls, data: dict):
+        """
+        unmarshal a dictionary containing the ProjectModel instance's attributes
+
+        :param data:
+        """
+
+        return ProjectModel(
+            project_name=data.get("project_name", "projectname")
+        )

@@ -34,10 +34,12 @@ def create_event(
     )
 
     if test:
+
         event.model.author.unmarshal(
             data={
-                "author_name": "John Doe",
-                "author_id": "123e4567-e89b-12d3-a456-426614174000"
+                "authorname": "John Doe",
+                "authorid": "123e4567-e89b-12d3-a456-426614174000",
+                "authortoken": "123e4567-e89b-12d3-a456-426614174000"
             }
         )
         event.model.schema.unmarshal(
@@ -55,7 +57,13 @@ def create_event(
                 "project_id": "123e4567-e89b-12d3-a456-426614174000"
             }
         )
-        event.model.data = json.load(open("data/instances/example.json"))
+        data = json.load(open("data/instances/example.json"))
+
+        event.model.data.unmarshal(
+            data={
+                "data": data
+            }
+        )
     else:
         event.model.author = AuthorModel(data={"name": "John Doe", "email": "test@example.com"})
         event.model.schema = SchemaModel(data={

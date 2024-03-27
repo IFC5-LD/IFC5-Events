@@ -6,12 +6,12 @@ from resources.models.project import ProjectModel
 from resources.models.schema import SchemaModel
 
 class EventModel(BaseModel):
-    _entityid: str
-    _componentid: str
-    _schema: SchemaModel
-    _author: AuthorModel
-    _data: DataModel
-    _project: ProjectModel
+    _entityid: str = None
+    _componentid: str = None
+    _schema: SchemaModel = SchemaModel()
+    _author: AuthorModel = AuthorModel()
+    _data: DataModel = DataModel()
+    _project: ProjectModel = ProjectModel()
 
     @property
     def entityid(self):
