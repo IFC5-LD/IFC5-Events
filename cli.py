@@ -61,7 +61,7 @@ def create_event(
 
         event.model.data.unmarshal(
             data={
-                "data": data
+                "data": {"key": "value"}
             }
         )
     else:

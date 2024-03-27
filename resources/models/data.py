@@ -108,11 +108,12 @@ class DataModel(BaseModel):
         :param event:
         :return:
         """
+        print(data)
 
         return DataModel(
             data_encoding=data.get("dataencoding", "utf-8"),
             data_encryption=data.get("dataencryption", ""),
             data_hash=data.get("datahash", hash(data.get("data"))),
-            data=data.get("data", {})
+            data=data["data"]
         )
 

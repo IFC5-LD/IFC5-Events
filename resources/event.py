@@ -21,10 +21,13 @@ class IFCEvent(CloudEvent):
             **self.model.project.marshal()
         }
 
+        attributes = {}
+        payload = self.model.data.marshal()
+
         return CloudEvent(
             source=self.source,
             type=self.type,
-            data=self._data.data,
+            data=payload,
             datacontenttype="application/cloudevents+json",
             time=str(datetime.datetime.utcnow()),
             **attributes
