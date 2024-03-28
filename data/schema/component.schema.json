@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "com.ifc5/component.schema.json",
+  "title": "Component",
+  "type": "object",
+  "properties": {
+    "entity_id": {
+      "type": [
+        "string"
+      ],
+      "description": "The entity id of the component"
+    },
+    "component_id": {
+      "type": [
+        "string"
+      ],
+      "description": "The component id of the component"
+    },
+    "updated_at": {
+      "type": [
+        "string"
+      ],
+      "description": "The updated at of the component"
+    },
+    "component_data": {
+      "type": "object",
+      "properties": {
+      }
+    }
+  }
+}

@@ -9,21 +9,14 @@ import dotenv
 from resources import IFCEvent, Schema
 from resources.models import DataModel, AuthorModel, SchemaModel, ProjectModel
 
+
 @click.command("create-event")
-@click.option("--source", "-s", help="The source of the event", required=False, default="https://example.com")
-@click.option("--type", "-t", help="The type of the event", required=False, default="com.example.event")
-@click.option("--entity-id", "-e", "entity_id", help="The entity ID of the event", required=False, default=str(uuid.uuid4()))
-@click.option("--component-id", "-c", "component_id", help="The component ID of the event", required=False, default=str(uuid.uuid4()))
-@click.option("--instance", "-i", help="The instance of the event", required=False, default={})
-@click.option("--schema", "-sc", help="The schema of the event", required=False, default={})
+@click.option("--instance", "-i", help="The path to the instance of the event data", required=False)
+@click.option("--schema", "-sc", help="The path to the schema of the event", required=False)
 @click.option("--test", is_flag=True, help="Run the test suite", default=False)
 def create_event(
-        source: str,
-        type: str,
-        entity_id: str,
-        component_id: str,
-        instance: dict,
-        schema: dict,
+        instance: str,
+        schema: str,
         test: bool
 ):
     event = IFCEvent(
@@ -46,12 +39,9 @@ def create_event(
             data=json.load(open("data/instances/tests/project.json"))
         )
 
-        data = json.load(open("data/instances/tests/data.json"))
         event.model.data = DataModel.unmarshal(
-            data=data
+            data=json.load(open("data/instances/tests/data.json"))
         )
-
-        event.data = data.get("data")
 
     else:
         event.model.author = AuthorModel(data={"name": "John Doe", "email": "test@example.com"})

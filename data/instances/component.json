@@ -1,0 +1,16 @@
+{
+  "component_id": "abc123",
+  "entity_id": "def456",
+  "component_type": "sensor",
+  "component_version": {
+    "version": "1.0",
+    "hash": "abc123"
+  },
+  "component": {
+    "name": "Temperature Sensor",
+    "type": "temperature",
+    "value": 72,
+    "state": "on",
+    "unit": "F"
+  }
+}
