@@ -44,18 +44,17 @@ def create_event(
         )
 
     else:
-        event.model.author = AuthorModel(data={"name": "John Doe", "email": "test@example.com"})
-        event.model.schema = SchemaModel(data={
-            "$schema": "http://json-schema.org/draft-07/schema#",
-            "title": "example",
-            "type": "object",
-            "properties": {"key": {"type": "string"}}
-        })
-        event.model.project = ProjectModel(data={"name": "example"})
-        event.model.data = DataModel(data={"key": "value"})
+        with open(instance, "r") as file:
+            data = json.load(file)
+
+        print(data)
+
+        event = IFCEvent.unmarshal(data)
+        print(event.marshal())
+
     click.echo('Creating a new event...')
     click.echo(f'Event ID: {event.entity_id}')
-    click.echo(f"Payload: {event.marshal().json()}")
+    click.echo(f"Event: {event.model}")
 
 
 @click.command("get-schema")

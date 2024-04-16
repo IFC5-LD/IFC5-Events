@@ -7,21 +7,6 @@ from pydantic import BaseModel
 class ProjectModel(BaseModel):
     project_name: Optional[str] = None
 
-    @property
-    def projectname(self):
-        return self.project_name
-
-    @projectname.setter
-    def projectname(self, value: str) -> None:
-        self.project_name = value
-
-    @projectname.deleter
-    def projectname(self) -> str:
-        tmp = self.project_name
-        self.project_name = None
-
-        return tmp
-
     def marshal(self, format: str = "json") -> dict:
         """
         marshal the ProjectModel instance and return a dictionary containing
@@ -29,8 +14,9 @@ class ProjectModel(BaseModel):
 
         :return:
         """
+        print(self)
         ret = {
-            "project_name": self.projectname
+            "project_name": self.project_name
         }
 
         if format == "cloudevent":

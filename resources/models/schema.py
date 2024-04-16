@@ -86,7 +86,7 @@ class SchemaModel(BaseModel):
             return ret
 
     @classmethod
-    def unmarshal(cls, data: dict):
+    def unmarshal(cls, data: dict) -> "SchemaModel":
 
         return SchemaModel(
             schema_name=data.get("schema_name", "schemaname"),

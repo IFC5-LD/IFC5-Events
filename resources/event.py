@@ -15,6 +15,7 @@ class IFCEvent(CloudEvent):
 
     def marshal(self) -> CloudEvent:
         format = "cloudevent"
+        print(self.model.project)
         attributes = {
             **self.model.schema.marshal(format),
             **self.model.author.marshal(format),
@@ -33,16 +34,21 @@ class IFCEvent(CloudEvent):
             **attributes
         )
 
-    def unmarshal(self, event: CloudEvent) -> None:
+    @classmethod
+    def unmarshal(cls, data: dict):
         # We likely need some better logic here
-        attributes = event.attributes()
-        data = event.data
 
-        self.source = attributes['source']
+        event = IFCEvent(
+            source=data['source'],
+            type=data['type'],
+            entity_id=data['entity_id'],
+            component_id=data['component_id']
+        )
 
-        self.entity_id = data['entity_id']
-        self.component_id = data['component_id']
-        self.model.schema = SchemaModel(**data['_schema'])
-        self.model.author = AuthorModel(**data['_author'])
-        self.model.data = DataModel(**data['_data'])
-        self.model.project = ProjectModel(**data['_project'])
+        event.model.schema=SchemaModel.unmarshal(data)
+        event.model.author=AuthorModel.unmarshal(data)
+        event.model.data=DataModel.unmarshal(data)
+        event.model.project=ProjectModel.unmarshal(data)
+
+        return event
+
