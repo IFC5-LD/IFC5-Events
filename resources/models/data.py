@@ -27,64 +27,6 @@ class DataModel(BaseModel):
     data_hash: str = None
     data: Union[dict] = None
 
-    @property
-    def dataencoding(self):
-        return self.data_encoding
-
-    @dataencoding.setter
-    def dataencoding(self, value: str=None) -> None:
-        if value:
-            self.data_encoding = value
-        else:
-            self.data_encoding = "utf-8"
-
-    @dataencoding.deleter
-    def dataencoding(self) -> str:
-        """
-        Delete the data encoding property and return the value of the data encoding property
-
-        :return: str
-        """
-        tmp = self.data_encoding
-        self.data_encoding = None
-
-        return tmp
-
-    @property
-    def dataencryption(self):
-        return self.data_encryption
-
-    @dataencryption.setter
-    def dataencryption(self, value: str) -> None:
-        self.data_encryption = value
-
-    @dataencryption.deleter
-    def dataencryption(self) -> str:
-        Warning("Deleting the event encryption is not allowed")
-
-    @property
-    def datahash(self):
-        return self.data_hash
-
-    @datahash.setter
-    def datahash(self, value: str, data: Union[str, dict]=None) -> None:
-        """
-        Set the data hash property. This method may be used by either passing a
-        literal SHA256 hash or by passing the data object as a dict or string to be hashed.
-
-        :param value:
-        :param data:
-        :return:
-        """
-
-        if data:
-            self.data_hash = hash(data, self.data_encoding)
-        else:
-            self.data_hash = value
-
-    @datahash.deleter
-    def datahash(self) -> str:
-        Warning("Deleting the event hash is not allowed")
 
     def marshal(self, format: str = "json") -> dict:
         """
@@ -96,9 +38,9 @@ class DataModel(BaseModel):
         """
 
         ret = {
-            "data_encoding": self.dataencoding,
-            "data_encryption": self.dataencryption,
-            "data_hash": self.datahash
+            "data_encoding": self.data_encoding,
+            "data_encryption": self.data_encryption,
+            "data_hash": self.data_hash
         }
 
         if format == "cloudevent":
